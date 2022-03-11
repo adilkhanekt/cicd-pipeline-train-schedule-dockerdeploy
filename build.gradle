@@ -10,26 +10,20 @@ node {
 }
 
 //declare a build task
-task build
+tasks.register('build') {
+    dependsOn('npm_build')
+    dependsOn('zip')
+}
 
 //declare a task to create a zip of the app
-task zip(type: Zip) {
-	from ('.') {
-		include "*"
-		include "bin/**"
-		include "data/**"
-		include "node_modules/**"
-		include "public/**"
-		include "routes/**"
-		include "views/**"
-	}
-	destinationDir(file("dist"))
-	baseName "trainSchedule"
+tasks.register('zip', Zip) {
+    dependsOn('npm_build')
+    description 'Archives package'
+    from '.'
+    include('*', 'bin/**', 'data/**', 'node_modules/**', 'public/**', 'routes/**', 'views/**')
+    archiveName 'trainschedule.zip'
+    destinationDir(file('dist'))
 }
 
 //declare task dependencies
-build.dependsOn zip
-zip.dependsOn npm_build
-npm_build.dependsOn npm_test
-npm_test.dependsOn npmInstall
-npm_build.dependsOn npmInstall
+tasks.named('npm_build') { dependsOn ('npmInstall', 'npm_test') }
