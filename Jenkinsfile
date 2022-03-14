@@ -36,14 +36,14 @@ pipeline {
                 milestone(1)
                 withCredentials([sshUserPrivateKey(credentialsId: 'server_key', keyFileVariable: 'KEY', usernameVariable: 'USERNAME')]) {
                     script {
-                        sh "ssh -o StrictHostKeyChecking=no -i $KEY $USERNAME@$prod_server_ip \"docker pull adilkhanekt/train_schedule_node_js:${env.BUILD_NUMBER}\""
+                        sh "ssh -o StrictHostKeyChecking=no -i $KEY $USERNAME@$prod_server_ip \"sudo docker pull adilkhanekt/train_schedule_node_js:${env.BUILD_NUMBER}\""
                         try {
-                            sh "ssh -o StrictHostKeyChecking=no -i $KEY $USERNAME@$prod_server_ip \"docker stop train-schedule\""
-                            sh "ssh -o StrictHostKeyChecking=no -i $KEY $USERNAME@$prod_server_ip \"docker rm train-schedule\""
+                            sh "ssh -o StrictHostKeyChecking=no -i $KEY $USERNAME@$prod_server_ip \"sudo docker stop train-schedule\""
+                            sh "ssh -o StrictHostKeyChecking=no -i $KEY $USERNAME@$prod_server_ip \"sudo docker rm train-schedule\""
                         } catch (err) {
                             echo: 'caught error: $err'
                         }
-                        sh "ssh -o StrictHostKeyChecking=no -i $KEY $USERNAME@$prod_server_ip \"docker run --restart always --name train-schedule -p 8080:8080 -d adilkhanekt/train_schedule_node_js:${env.BUILD_NUMBER}\""
+                        sh "ssh -o StrictHostKeyChecking=no -i $KEY $USERNAME@$prod_server_ip \"sudo docker run --restart always --name train-schedule -p 8080:8080 -d adilkhanekt/train_schedule_node_js:${env.BUILD_NUMBER}\""
                     }
                 }
             }
