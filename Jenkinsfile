@@ -9,8 +9,6 @@ pipeline {
                 script {
                     app = docker.build("adilkhanekt/train_schedule_node_js")
                     app.inside {
-                        sh './gradlew build'
-                        sh './gradlew npm_start'
                         sh 'echo $(curl localhost:8080)'
                     }
                 }
